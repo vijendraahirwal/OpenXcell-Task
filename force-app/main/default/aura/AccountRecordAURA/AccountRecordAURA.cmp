@@ -1,0 +1,56 @@
+<aura:component controller="AccountRecordAURAController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:appHostable" 
+                access="global">
+    <aura:attribute name="results" type="List[]"/>
+    <aura:attribute name="mycolumns" type="List"/>        
+    <aura:attribute name="createAcc" type="Account" default="{'sObjectType' : 'Account','Name' : ''}"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:if isTrue="{! v.isLoading }">
+        <lightning:spinner alternativeText="Loading" />
+    </aura:if> 
+    <button class="slds-button slds-button_brand slds-button__icon_right float: right" 
+                                                                    onclick="{! c.openModel }">NEW</button>
+    <lightning:layout multipleRows="true" horizontalAlign="center">
+        <lightning:layoutItem padding="around-small" size="12">             
+            <lightning:datatable keyField="id" data="{!v.results}"
+                                 columns="{!v.mycolumns}"
+                                 resizeColumnDisabled="true"
+                                 hideCheckboxColumn="true"
+                                 onrowaction="{!c.handleRowAction}"
+                                 />            
+        </lightning:layoutItem>       
+    </lightning:layout>
+    <aura:if isTrue="{!v.isModalOpen}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.doCancel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close" />
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New Account Record</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:input type="Text" label="Name" value="{!v.createAcc.Name}"/>
+                        <lightning:input type="Text" label="Account Number" value="{!v.createAcc.AccountNumber}"/>
+                        <lightning:input type="Text" name="Industry" value="{!v.createAcc.Industry}" label="Industry"/>
+                        <lightning:input type="Phone" label="Phone Number" value="{!v.createAcc.Phone}"/> 
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.doCancel }"/>
+                        <lightning:button variant="brand"
+                                          label="OK"
+                                          title="OK"
+                                          onclick="{! c.doSave }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+</aura:component>
